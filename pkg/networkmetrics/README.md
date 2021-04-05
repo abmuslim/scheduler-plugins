@@ -5,6 +5,14 @@ curl -g 'http://localhost:9090/api/v1/query?query=sum_over_time(node_network_rec
 ```
 
 ```shell
+# Query to retrieve current node network receive in bytes
+sum_over_time(node_network_receive_bytes_total{kubernetes_node="node53",device="ens192"}[5m])
 # Query to retrieve highest metric which will be used as the 100% value
 topk(1,sum_over_time(node_network_receive_bytes_total{device="ens192"}[5m]))
+```
+
+```shell
+
+# Troubleshooting
+kubectl run tmp-shell --rm -i --tty --image nicolaka/netshoot -- /bin/bash
 ```
