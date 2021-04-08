@@ -21,7 +21,6 @@ limitations under the License.
 package v1beta1
 
 import (
-	time "time"
 	unsafe "unsafe"
 
 	corev1 "k8s.io/api/core/v1"
@@ -201,9 +200,9 @@ func Convert_config_MetricProviderSpec_To_v1beta1_MetricProviderSpec(in *config.
 }
 
 func autoConvert_v1beta1_NetworkTrafficArgs_To_config_NetworkTrafficArgs(in *NetworkTrafficArgs, out *config.NetworkTrafficArgs, s conversion.Scope) error {
-	out.Address = in.Address
-	out.NetworkInterface = in.NetworkInterface
-	out.TimeRange = time.Duration(in.TimeRange)
+	out.Address = (*string)(unsafe.Pointer(in.Address))
+	out.NetworkInterface = (*string)(unsafe.Pointer(in.NetworkInterface))
+	out.TimeRangeInMinutes = in.TimeRangeInMinutes
 	return nil
 }
 
@@ -213,9 +212,9 @@ func Convert_v1beta1_NetworkTrafficArgs_To_config_NetworkTrafficArgs(in *Network
 }
 
 func autoConvert_config_NetworkTrafficArgs_To_v1beta1_NetworkTrafficArgs(in *config.NetworkTrafficArgs, out *NetworkTrafficArgs, s conversion.Scope) error {
-	out.Address = in.Address
-	out.NetworkInterface = in.NetworkInterface
-	out.TimeRange = time.Duration(in.TimeRange)
+	out.Address = (*string)(unsafe.Pointer(in.Address))
+	out.NetworkInterface = (*string)(unsafe.Pointer(in.NetworkInterface))
+	out.TimeRangeInMinutes = in.TimeRangeInMinutes
 	return nil
 }
 

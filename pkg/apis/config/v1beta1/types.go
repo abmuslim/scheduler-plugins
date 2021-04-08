@@ -17,8 +17,6 @@ limitations under the License.
 package v1beta1
 
 import (
-	"time"
-
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	schedulerconfig "k8s.io/kube-scheduler/config/v1"
@@ -123,9 +121,9 @@ type NetworkTrafficArgs struct {
 	metav1.TypeMeta
 
 	// Address of the Prometheus Server
-	Address string
+	Address *string `json:"prometheusAddress,omitempty"`
 	// NetworkInterface to be monitored, assume that OS is homogeneous
-	NetworkInterface string
+	NetworkInterface *string `json:"networkInterface,omitempty"`
 	// TimeRange used to aggregate the network metrics
-	TimeRange time.Duration
+	TimeRangeInMinutes int64 `json:"timeRangeInMinutes,omitempty"`
 }

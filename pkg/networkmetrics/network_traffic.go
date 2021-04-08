@@ -3,6 +3,7 @@ package networkmetrics
 import (
 	"context"
 	"fmt"
+	"time"
 
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -17,13 +18,13 @@ type NetworkTraffic struct {
 	prometheus *PrometheusHandle
 }
 
-// NetworkTrafficName is the name of the plugin used in the Registry and configurations.
-const NetworkTrafficName = "NodeNetworkTrafficScorer"
+// Name is the name of the plugin used in the Registry and configurations.
+const Name = "NodeNetworkTrafficScorer"
 
 var _ = framework.ScorePlugin(&NetworkTraffic{})
 
-// NewNetworkTraffic initializes a new plugin and returns it.
-func NewNetworkTraffic(NetworkArgs runtime.Object, h framework.FrameworkHandle) (framework.Plugin, error) {
+// New initializes a new plugin and returns it.
+func New(NetworkArgs runtime.Object, h framework.FrameworkHandle) (framework.Plugin, error) {
 	args, ok := NetworkArgs.(*config.NetworkTrafficArgs)
 	if !ok {
 		return nil, fmt.Errorf("want args to be of type NetworkTrafficArgs, got %T", args)
@@ -31,13 +32,13 @@ func NewNetworkTraffic(NetworkArgs runtime.Object, h framework.FrameworkHandle) 
 
 	return &NetworkTraffic{
 		handle:     h,
-		prometheus: NewPrometheus(args.Address, args.NetworkInterface, args.TimeRange),
+		prometheus: NewPrometheus(*args.Address, *args.NetworkInterface, time.Minute*time.Duration(args.TimeRangeInMinutes)),
 	}, nil
 }
 
 // Name returns name of the plugin. It is used in logs, etc.
 func (n *NetworkTraffic) Name() string {
-	return NetworkTrafficName
+	return Name
 }
 
 func (n *NetworkTraffic) Score(ctx context.Context, state *framework.CycleState, p *v1.Pod, nodeName string) (int64, *framework.Status) {
