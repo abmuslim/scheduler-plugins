@@ -36,6 +36,7 @@ func RegisterDefaults(scheme *runtime.Scheme) error {
 	scheme.AddTypeDefaultingFunc(&TargetLoadPackingArgs{}, func(obj interface{}) {
 		SetObjectDefaultsTargetLoadPackingArgs(obj.(*TargetLoadPackingArgs))
 	})
+	scheme.AddTypeDefaultingFunc(&NetworkTrafficArgs{}, func(obj interface{}) { SetObjectDefaultsNetworkTrafficArgs(obj.(*NetworkTrafficArgs)) })
 	return nil
 }
 
@@ -53,4 +54,8 @@ func SetObjectDefaultsNodeResourcesAllocatableArgs(in *NodeResourcesAllocatableA
 
 func SetObjectDefaultsTargetLoadPackingArgs(in *TargetLoadPackingArgs) {
 	SetDefaultTargetLoadPackingArgs(in)
+}
+
+func SetObjectDefaultsNetworkTrafficArgs(in *NetworkTrafficArgs) {
+	SetDefaultNetworkTrafficArgs(in)
 }

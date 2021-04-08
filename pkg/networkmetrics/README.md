@@ -16,3 +16,6 @@ topk(1,sum_over_time(node_network_receive_bytes_total{device="ens192"}[5m]))
 # Troubleshooting
 kubectl run tmp-shell --rm -i --tty --image nicolaka/netshoot -- /bin/bash
 ```
+
+From what I understand there's no need to consider the plugin weight for the score calculation. It will be handled
+by the framework.

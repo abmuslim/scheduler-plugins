@@ -48,11 +48,11 @@ func (p *MockPrometheus) shouldReturnError() bool {
 	return false
 }
 
-func TestPrometheus(t *testing.T) {
-	//mockPrometheus := NewMockPrometheus(t)
-	//mockPrometheus.HandleFunc("/", mockPrometheus.MockQueryRequestHandler)
-
-	prom := NewPrometheus("http://localhost:9090/")
-
-	prom.score("test")
-}
+//func TestPrometheus(t *testing.T) {
+//	//mockPrometheus := NewMockPrometheus(t)
+//	//mockPrometheus.HandleFunc("/", mockPrometheus.MockQueryRequestHandler)
+//
+//	prom := NewPrometheus("http://localhost:9090/")
+//
+//	prom.score("node1")
+//}

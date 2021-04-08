@@ -17,6 +17,8 @@ limitations under the License.
 package v1beta1
 
 import (
+	"time"
+
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	schedulerconfig "k8s.io/kube-scheduler/config/v1"
@@ -111,4 +113,19 @@ type TargetLoadPackingArgs struct {
 	MetricProvider MetricProviderSpec `json:"metricProvider,omitempty"`
 	// Address of load watcher service
 	WatcherAddress *string `json:"watcherAddress,omitempty"`
+}
+
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +k8s:defaulter-gen=true
+
+// NetworkTrafficArgs holds arguments used to configure NetworkTraffic plugin.
+type NetworkTrafficArgs struct {
+	metav1.TypeMeta
+
+	// Address of the Prometheus Server
+	Address string
+	// NetworkInterface to be monitored, assume that OS is homogeneous
+	NetworkInterface string
+	// TimeRange used to aggregate the network metrics
+	TimeRange time.Duration
 }

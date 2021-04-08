@@ -20,6 +20,7 @@ package v1beta1
 
 import (
 	"strconv"
+	"time"
 
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
@@ -93,5 +94,16 @@ func SetDefaultTargetLoadPackingArgs(args *TargetLoadPackingArgs) {
 	}
 	if args.TargetUtilization == nil || *args.TargetUtilization <= 0 {
 		args.TargetUtilization = &DefaultTargetUtilizationPercent
+	}
+}
+
+// SetDefaultNetworkTrafficArgs sets the default parameters for the NetworkTraffic plugin
+func SetDefaultNetworkTrafficArgs(args *NetworkTrafficArgs) {
+	if args.TimeRange.String() == "" {
+		args.TimeRange = 5 * time.Minute
+	}
+
+	if args.NetworkInterface == "" {
+		args.NetworkInterface = "ens192"
 	}
 }
