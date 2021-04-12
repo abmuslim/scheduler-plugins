@@ -24,8 +24,8 @@ const Name = "NodeNetworkTrafficScorer"
 var _ = framework.ScorePlugin(&NetworkTraffic{})
 
 // New initializes a new plugin and returns it.
-func New(NetworkArgs runtime.Object, h framework.FrameworkHandle) (framework.Plugin, error) {
-	args, ok := NetworkArgs.(*config.NetworkTrafficArgs)
+func New(obj runtime.Object, h framework.FrameworkHandle) (framework.Plugin, error) {
+	args, ok := obj.(*config.NetworkTrafficArgs)
 	if !ok {
 		return nil, fmt.Errorf("want args to be of type NetworkTrafficArgs, got %T", args)
 	}

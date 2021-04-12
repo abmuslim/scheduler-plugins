@@ -200,8 +200,12 @@ func Convert_config_MetricProviderSpec_To_v1beta1_MetricProviderSpec(in *config.
 }
 
 func autoConvert_v1beta1_NetworkTrafficArgs_To_config_NetworkTrafficArgs(in *NetworkTrafficArgs, out *config.NetworkTrafficArgs, s conversion.Scope) error {
-	out.Address = (*string)(unsafe.Pointer(in.Address))
-	out.NetworkInterface = (*string)(unsafe.Pointer(in.NetworkInterface))
+	if err := v1.Convert_Pointer_string_To_string(&in.Address, &out.Address, s); err != nil {
+		return err
+	}
+	if err := v1.Convert_Pointer_string_To_string(&in.NetworkInterface, &out.NetworkInterface, s); err != nil {
+		return err
+	}
 	out.TimeRangeInMinutes = in.TimeRangeInMinutes
 	return nil
 }
@@ -212,8 +216,12 @@ func Convert_v1beta1_NetworkTrafficArgs_To_config_NetworkTrafficArgs(in *Network
 }
 
 func autoConvert_config_NetworkTrafficArgs_To_v1beta1_NetworkTrafficArgs(in *config.NetworkTrafficArgs, out *NetworkTrafficArgs, s conversion.Scope) error {
-	out.Address = (*string)(unsafe.Pointer(in.Address))
-	out.NetworkInterface = (*string)(unsafe.Pointer(in.NetworkInterface))
+	if err := v1.Convert_string_To_Pointer_string(&in.Address, &out.Address, s); err != nil {
+		return err
+	}
+	if err := v1.Convert_string_To_Pointer_string(&in.NetworkInterface, &out.NetworkInterface, s); err != nil {
+		return err
+	}
 	out.TimeRangeInMinutes = in.TimeRangeInMinutes
 	return nil
 }

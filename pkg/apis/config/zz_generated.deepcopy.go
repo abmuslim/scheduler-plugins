@@ -96,16 +96,6 @@ func (in *MetricProviderSpec) DeepCopy() *MetricProviderSpec {
 func (in *NetworkTrafficArgs) DeepCopyInto(out *NetworkTrafficArgs) {
 	*out = *in
 	out.TypeMeta = in.TypeMeta
-	if in.Address != nil {
-		in, out := &in.Address, &out.Address
-		*out = new(string)
-		**out = **in
-	}
-	if in.NetworkInterface != nil {
-		in, out := &in.NetworkInterface, &out.NetworkInterface
-		*out = new(string)
-		**out = **in
-	}
 	return
 }
 
