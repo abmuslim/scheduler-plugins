@@ -3,7 +3,7 @@ kind: KubeSchedulerConfiguration
 leaderElection:
   leaderElect: false
 clientConnection:
-  kubeconfig: "REPLACE_ME_WITH_KUBE_CONFIG_PATH"
+  kubeconfig: "/etc/kubernetes/scheduler.conf"
 profiles:
 - schedulerName: default-scheduler
   plugins:
@@ -15,6 +15,6 @@ profiles:
   pluginConfig:
   - name: NodeNetworkTrafficScorer
     args:
-      prometheusAddress: ""
+      prometheusAddress: "prometheus-1616380099-server"
       networkInterface: "ens192"
       timeRangeInMinutes: 3
