@@ -32,7 +32,7 @@ func New(obj runtime.Object, h framework.FrameworkHandle) (framework.Plugin, err
 
 	return &NetworkTraffic{
 		handle:     h,
-		prometheus: NewPrometheus(*args.Address, *args.NetworkInterface, time.Minute*time.Duration(args.TimeRangeInMinutes)),
+		prometheus: NewPrometheus(args.Address, args.NetworkInterface, time.Minute*time.Duration(args.TimeRangeInMinutes)),
 	}, nil
 }
 
