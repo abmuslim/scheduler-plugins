@@ -124,6 +124,6 @@ type NetworkTrafficArgs struct {
 	Address *string `json:"prometheusAddress,omitempty"`
 	// NetworkInterface to be monitored, assume that OS is homogeneous
 	NetworkInterface *string `json:"networkInterface,omitempty"`
-	// TimeRange used to aggregate the network metrics
+	// TimeRangeInMinutes used to aggregate the network metrics
 	TimeRangeInMinutes int64 `json:"timeRangeInMinutes,omitempty"`
 }
