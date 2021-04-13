@@ -141,6 +141,11 @@ func (in *NetworkTrafficArgs) DeepCopyInto(out *NetworkTrafficArgs) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.TimeRangeInMinutes != nil {
+		in, out := &in.TimeRangeInMinutes, &out.TimeRangeInMinutes
+		*out = new(int64)
+		**out = **in
+	}
 	return
 }
 

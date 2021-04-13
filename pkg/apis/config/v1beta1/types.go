@@ -125,5 +125,5 @@ type NetworkTrafficArgs struct {
 	// NetworkInterface to be monitored, assume that OS is homogeneous
 	NetworkInterface *string `json:"networkInterface,omitempty"`
 	// TimeRangeInMinutes used to aggregate the network metrics
-	TimeRangeInMinutes int64 `json:"timeRangeInMinutes,omitempty"`
+	TimeRangeInMinutes *int64 `json:"timeRangeInMinutes,omitempty"`
 }

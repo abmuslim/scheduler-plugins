@@ -206,7 +206,9 @@ func autoConvert_v1beta1_NetworkTrafficArgs_To_config_NetworkTrafficArgs(in *Net
 	if err := v1.Convert_Pointer_string_To_string(&in.NetworkInterface, &out.NetworkInterface, s); err != nil {
 		return err
 	}
-	out.TimeRangeInMinutes = in.TimeRangeInMinutes
+	if err := v1.Convert_Pointer_int64_To_int64(&in.TimeRangeInMinutes, &out.TimeRangeInMinutes, s); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -222,7 +224,9 @@ func autoConvert_config_NetworkTrafficArgs_To_v1beta1_NetworkTrafficArgs(in *con
 	if err := v1.Convert_string_To_Pointer_string(&in.NetworkInterface, &out.NetworkInterface, s); err != nil {
 		return err
 	}
-	out.TimeRangeInMinutes = in.TimeRangeInMinutes
+	if err := v1.Convert_int64_To_Pointer_int64(&in.TimeRangeInMinutes, &out.TimeRangeInMinutes, s); err != nil {
+		return err
+	}
 	return nil
 }
 
