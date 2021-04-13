@@ -10,6 +10,7 @@ profiles:
     score:
       enabled:
       - name: NodeNetworkTrafficScorer
+      - name: NodeResourcesAllocatable
       disabled:
       - name: "*"
   pluginConfig:
@@ -18,3 +19,11 @@ profiles:
       prometheusAddress: "prometheus-1616380099-server"
       networkInterface: "ens192"
       timeRangeInMinutes: 3
+  - name: NodeResourcesAllocatable
+    args:
+      mode: Least
+      resources:
+      - name: cpu
+        weight: 1000000
+      - name: memory
+        weight: 1

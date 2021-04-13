@@ -21,7 +21,7 @@ spec:
     - --port=0
     - --config=/etc/kubernetes/networktraffic-config.yaml
     image: 10.43.0.201:5000/scheduler-plugins/kube-scheduler:latest
-    imagePullPolicy: IfNotPresent
+    imagePullPolicy: Always
     livenessProbe:
       failureThreshold: 8
       httpGet:

@@ -78,6 +78,7 @@ func (alloc *Allocatable) ScoreExtensions() framework.ScoreExtensions {
 
 // NewAllocatable initializes a new plugin and returns it.
 func NewAllocatable(allocArgs runtime.Object, h framework.FrameworkHandle) (framework.Plugin, error) {
+	fmt.Printf("My custom print allocatable: %+v", allocArgs)
 	// Start with default values.
 	mode := config.Least
 	resToWeightMap := defaultResourcesToWeightMap
@@ -86,7 +87,7 @@ func NewAllocatable(allocArgs runtime.Object, h framework.FrameworkHandle) (fram
 	if allocArgs != nil {
 		args, ok := allocArgs.(*config.NodeResourcesAllocatableArgs)
 		if !ok {
-			return nil, fmt.Errorf("want args to be of type NodeResourcesAllocatableArgs, got %T", allocArgs)
+			return nil, fmt.Errorf("my error: want args to be of type NodeResourcesAllocatableArgs, got %T", allocArgs)
 		}
 		if args.Mode != "" {
 			mode = args.Mode

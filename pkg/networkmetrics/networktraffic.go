@@ -25,7 +25,7 @@ var _ = framework.ScorePlugin(&NetworkTraffic{})
 
 // New initializes a new plugin and returns it.
 func New(obj runtime.Object, h framework.FrameworkHandle) (framework.Plugin, error) {
-	fmt.Printf("My custom print: %+v", obj)
+	fmt.Printf("My custom print network traffic: %+v", obj)
 	args, ok := obj.(*config.NetworkTrafficArgs)
 	if !ok {
 		fmt.Printf("%+v", obj)
