@@ -98,8 +98,9 @@ func SetDefaultTargetLoadPackingArgs(args *TargetLoadPackingArgs) {
 
 // SetDefaultNetworkTrafficArgs sets the default parameters for the NetworkTraffic plugin
 func SetDefaultNetworkTrafficArgs(args *NetworkTrafficArgs) {
-	if args.TimeRangeInMinutes == 0 {
-		args.TimeRangeInMinutes = 5
+	if args.TimeRangeInMinutes == nil {
+		defaultTime := int64(5)
+		args.TimeRangeInMinutes = &defaultTime
 	}
 
 	if *args.NetworkInterface == "" {
