@@ -25,12 +25,12 @@ var _ = framework.ScorePlugin(&NetworkTraffic{})
 
 // New initializes a new plugin and returns it.
 func New(obj runtime.Object, h framework.FrameworkHandle) (framework.Plugin, error) {
-	fmt.Printf("%+v", obj)
-	args := obj.(*config.NetworkTrafficArgs)
-	// if !ok {
-	// 	fmt.Printf("%+v", obj)
-	// 	return nil, fmt.Errorf("want args to be of type NetworkTrafficArgs, got %T", args)
-	// }
+	fmt.Printf("My custom print: %+v", obj)
+	args, ok := obj.(*config.NetworkTrafficArgs)
+	if !ok {
+		fmt.Printf("%+v", obj)
+		return nil, fmt.Errorf("my error: want args to be of type NetworkTrafficArgs, got %T", args)
+	}
 
 	return &NetworkTraffic{
 		handle:     h,
