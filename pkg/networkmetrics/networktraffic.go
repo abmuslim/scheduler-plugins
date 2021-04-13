@@ -32,6 +32,8 @@ func New(obj runtime.Object, h framework.FrameworkHandle) (framework.Plugin, err
 		return nil, fmt.Errorf("my error: want args to be of type NetworkTrafficArgs, got %T", args)
 	}
 
+	fmt.Print("successfully initiated")
+
 	return &NetworkTraffic{
 		handle:     h,
 		prometheus: NewPrometheus(args.Address, args.NetworkInterface, time.Minute*time.Duration(args.TimeRangeInMinutes)),
