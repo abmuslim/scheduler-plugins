@@ -27,11 +27,11 @@ var _ = framework.ScorePlugin(&NetworkTraffic{})
 // New initializes a new plugin and returns it.
 func New(obj runtime.Object, h framework.FrameworkHandle) (framework.Plugin, error) {
 	klog.Infof("My custom print network traffic: %+v", obj)
-	args, ok := obj.(*config.NetworkTrafficArgs)
-	if !ok {
-		klog.Infof("%+v", obj)
-		return nil, fmt.Errorf("my error: want args to be of type NetworkTrafficArgs, got %T", args)
-	}
+	args := obj.(*config.NetworkTrafficArgs)
+	// if !ok {
+	// 	klog.Infof("%+v", obj)
+	// 	return nil, fmt.Errorf("my error: want args to be of type NetworkTrafficArgs, got %T", args)
+	// }
 
 	klog.Info("successfully initiated")
 
