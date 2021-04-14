@@ -2,6 +2,7 @@ package networkmetrics
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -26,15 +27,15 @@ var _ = framework.ScorePlugin(&NetworkTraffic{})
 
 // New initializes a new plugin and returns it.
 func New(obj runtime.Object, h framework.FrameworkHandle) (framework.Plugin, error) {
-	klog.Infof("My custom print network traffic 1: %+v", obj)
-	klog.Infof("My custom print network traffic type 1: %T", obj)
-	args := obj.(*config.NetworkTrafficArgs)
-	// if !ok {
-	// 	klog.Infof("%+v", obj)
-	// 	return nil, fmt.Errorf("my error: want args to be of type NetworkTrafficArgs, got %T", args)
-	// }
+	unknownType, ok := obj.(*runtime.Unknown)
+	if !ok {
+		return nil, fmt.Errorf("want args to be of type runtime.Unkown, got %T", obj)
+	}
 
-	klog.Info("successfully initiated")
+	args := &config.NetworkTrafficArgs{}
+	if err := json.Unmarshal(unknownType.Raw, args); err != nil {
+		return nil, fmt.Errorf("error unmarshaling runtime.Unknown type into NetworkTrafficArgs: %w", err)
+	}
 
 	return &NetworkTraffic{
 		handle:     h,
