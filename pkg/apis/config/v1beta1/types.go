@@ -118,7 +118,7 @@ type TargetLoadPackingArgs struct {
 
 // NetworkTrafficArgs holds arguments used to configure NetworkTraffic plugin.
 type NetworkTrafficArgs struct {
-	metav1.TypeMeta
+	metav1.TypeMeta `json:",inline"`
 
 	// Address of the Prometheus Server
 	Address *string `json:"prometheusAddress,omitempty"`
