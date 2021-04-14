@@ -56,7 +56,7 @@ func (n *NetworkTraffic) Score(ctx context.Context, state *framework.CycleState,
 
 	nodeBandwidthValue := nodeBandwidth.Value
 
-	klog.Infof("node bandwidth: %s", nodeBandwidthValue)
+	klog.Infof("[NetworkTraffic] node bandwidth: %s", nodeBandwidthValue)
 	return int64(nodeBandwidth.Value), nil
 }
 
@@ -76,5 +76,7 @@ func (n *NetworkTraffic) NormalizeScore(ctx context.Context, state *framework.Cy
 	for _, node := range scores {
 		node.Score = framework.MaxNodeScore - (node.Score * framework.MaxNodeScore / higherScore)
 	}
+
+	klog.Infof("[NetworkTraffic] Nodes final score: %v", scores)
 	return nil
 }
