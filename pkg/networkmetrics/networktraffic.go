@@ -73,8 +73,8 @@ func (n *NetworkTraffic) NormalizeScore(ctx context.Context, state *framework.Cy
 		}
 	}
 
-	for _, node := range scores {
-		node.Score = framework.MaxNodeScore - (node.Score * framework.MaxNodeScore / higherScore)
+	for i, node := range scores {
+		scores[i].Score = framework.MaxNodeScore - (node.Score * framework.MaxNodeScore / higherScore)
 	}
 
 	klog.Infof("[NetworkTraffic] Nodes final score: %v", scores)
