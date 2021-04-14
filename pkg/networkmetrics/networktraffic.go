@@ -7,6 +7,7 @@ import (
 
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/klog/v2"
 	framework "k8s.io/kubernetes/pkg/scheduler/framework/v1alpha1"
 	"sigs.k8s.io/scheduler-plugins/pkg/apis/config"
 )
@@ -25,14 +26,14 @@ var _ = framework.ScorePlugin(&NetworkTraffic{})
 
 // New initializes a new plugin and returns it.
 func New(obj runtime.Object, h framework.FrameworkHandle) (framework.Plugin, error) {
-	fmt.Printf("My custom print network traffic: %+v", obj)
+	klog.Infof("My custom print network traffic: %+v", obj)
 	args, ok := obj.(*config.NetworkTrafficArgs)
 	if !ok {
-		fmt.Printf("%+v", obj)
+		klog.Infof("%+v", obj)
 		return nil, fmt.Errorf("my error: want args to be of type NetworkTrafficArgs, got %T", args)
 	}
 
-	fmt.Print("successfully initiated")
+	klog.Info("successfully initiated")
 
 	return &NetworkTraffic{
 		handle:     h,
@@ -53,7 +54,7 @@ func (n *NetworkTraffic) Score(ctx context.Context, state *framework.CycleState,
 
 	nodeBandwidthValue := nodeBandwidth.Value
 
-	fmt.Printf("node bandwidth: %s", nodeBandwidthValue)
+	klog.Infof("node bandwidth: %s", nodeBandwidthValue)
 	return int64(nodeBandwidth.Value), nil
 }
 
