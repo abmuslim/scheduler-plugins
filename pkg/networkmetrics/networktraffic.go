@@ -61,7 +61,7 @@ func (n *NetworkTraffic) Score(ctx context.Context, state *framework.CycleState,
 }
 
 func (n *NetworkTraffic) ScoreExtensions() framework.ScoreExtensions {
-	return nil
+	return n
 }
 
 func (n *NetworkTraffic) NormalizeScore(ctx context.Context, state *framework.CycleState, pod *v1.Pod, scores framework.NodeScoreList) *framework.Status {
