@@ -2,7 +2,6 @@ package networkmetrics
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -21,20 +20,15 @@ type NetworkTraffic struct {
 }
 
 // Name is the name of the plugin used in the Registry and configurations.
-const Name = "NodeNetworkTrafficScorer"
+const Name = "NetworkTraffic"
 
 var _ = framework.ScorePlugin(&NetworkTraffic{})
 
 // New initializes a new plugin and returns it.
 func New(obj runtime.Object, h framework.FrameworkHandle) (framework.Plugin, error) {
-	unknownType, ok := obj.(*runtime.Unknown)
+	args, ok := obj.(*config.NetworkTrafficArgs)
 	if !ok {
-		return nil, fmt.Errorf("want args to be of type runtime.Unkown, got %T", obj)
-	}
-
-	args := &config.NetworkTrafficArgs{}
-	if err := json.Unmarshal(unknownType.Raw, args); err != nil {
-		return nil, fmt.Errorf("error unmarshaling runtime.Unknown type into NetworkTrafficArgs: %w", err)
+		return nil, fmt.Errorf("want args to be of type NetworkTrafficArgs, got %T", obj)
 	}
 
 	return &NetworkTraffic{
