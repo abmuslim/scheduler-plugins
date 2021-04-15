@@ -39,8 +39,12 @@ func NewPrometheus(address, networkInterface string, timeRange time.Duration) *P
 	}
 }
 
+func getNodeBandwidthQuery(node, networkInterface string, timeRange time.Duration) string {
+	return fmt.Sprintf(nodeMeasureQueryTemplate, node, networkInterface, timeRange)
+}
+
 func (p *PrometheusHandle) getNodeBandwidthMeasure(node string) (*model.Sample, error) {
-	query := fmt.Sprintf(nodeMeasureQueryTemplate, node, p.networkInterface, p.timeRange)
+	query := getNodeBandwidthQuery(node, p.networkInterface, p.timeRange)
 	res, err := p.query(query)
 	if err != nil {
 		return nil, fmt.Errorf("error querying prometheus: %w", err)
