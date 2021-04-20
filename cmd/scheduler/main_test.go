@@ -34,6 +34,7 @@ import (
 	kubeschedulerconfig "k8s.io/kubernetes/pkg/scheduler/apis/config"
 
 	"sigs.k8s.io/scheduler-plugins/pkg/coscheduling"
+	"sigs.k8s.io/scheduler-plugins/pkg/networktraffic"
 	"sigs.k8s.io/scheduler-plugins/pkg/noderesources"
 	"sigs.k8s.io/scheduler-plugins/pkg/qos"
 	"sigs.k8s.io/scheduler-plugins/pkg/trimaran/targetloadpacking"
@@ -247,6 +248,30 @@ profiles:
       - name: NodeResourcesAllocatable
       disabled:
       - name: "*"
+`, configKubeconfig)), os.FileMode(0600)); err != nil {
+		t.Fatal(err)
+	}
+
+	networkTrafficConfigFileWithArgs := filepath.Join(tmpDir, "networkTraffic.yaml")
+	if err := ioutil.WriteFile(networkTrafficConfigFileWithArgs, []byte(fmt.Sprintf(`
+apiVersion: kubescheduler.config.k8s.io/v1beta1
+kind: KubeSchedulerConfiguration
+clientConnection:
+  kubeconfig: "%s"
+profiles:
+- schedulerName: default-scheduler
+  plugins:
+    score:
+      enabled:
+      - name: NetworkTraffic
+      disabled:
+      - name: "*"
+  pluginConfig:
+  - name: NetworkTraffic
+    args:
+      prometheusAddress: "prometheus-1616380099-server"
+      networkInterface: "ens192"
+      timeRangeInMinutes: 3
 `, configKubeconfig)), os.FileMode(0600)); err != nil {
 		t.Fatal(err)
 	}
@@ -512,6 +537,24 @@ profiles:
 					"QueueSortPlugin":  defaultPlugins["QueueSortPlugin"],
 					"ReservePlugin":    {{Name: "VolumeBinding"}},
 					"ScorePlugin":      {{Name: "NodeResourcesAllocatable", Weight: 1}},
+				},
+			},
+		},
+		{
+			name:            "single profile config - Network Traffic with args",
+			flags:           []string{"--config", networkTrafficConfigFileWithArgs},
+			registryOptions: []app.Option{app.WithPlugin(networktraffic.Name, networktraffic.New)},
+			wantPlugins: map[string]map[string][]kubeschedulerconfig.Plugin{
+				"default-scheduler": {
+					"BindPlugin":       {{Name: "DefaultBinder"}},
+					"FilterPlugin":     defaultPlugins["FilterPlugin"],
+					"PostFilterPlugin": {{Name: "DefaultPreemption"}},
+					"PreBindPlugin":    {{Name: "VolumeBinding"}},
+					"PreFilterPlugin":  defaultPlugins["PreFilterPlugin"],
+					"PreScorePlugin":   defaultPlugins["PreScorePlugin"],
+					"QueueSortPlugin":  defaultPlugins["QueueSortPlugin"],
+					"ReservePlugin":    {{Name: "VolumeBinding"}},
+					"ScorePlugin":      {{Name: "NetworkTraffic", Weight: 1}},
 				},
 			},
 		},

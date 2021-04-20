@@ -7,6 +7,8 @@ require (
 	github.com/google/uuid v1.1.1
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/paypal/load-watcher v0.1.1
+	github.com/prometheus/client_golang v1.9.0
+	github.com/prometheus/common v0.15.0
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.5.1
 	k8s.io/api v0.19.8

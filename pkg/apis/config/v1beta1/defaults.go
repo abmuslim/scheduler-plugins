@@ -95,3 +95,16 @@ func SetDefaultTargetLoadPackingArgs(args *TargetLoadPackingArgs) {
 		args.TargetUtilization = &DefaultTargetUtilizationPercent
 	}
 }
+
+// SetDefaultNetworkTrafficArgs sets the default parameters for the NetworkTraffic plugin
+func SetDefaultNetworkTrafficArgs(args *NetworkTrafficArgs) {
+	if args.TimeRangeInMinutes == nil {
+		defaultTime := int64(5)
+		args.TimeRangeInMinutes = &defaultTime
+	}
+
+	if *args.NetworkInterface == "" {
+		netInterface := "ens192"
+		args.NetworkInterface = &netInterface
+	}
+}
