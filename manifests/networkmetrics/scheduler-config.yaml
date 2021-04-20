@@ -7,11 +7,11 @@ profiles:
   plugins:
     score:
       enabled:
-      - name: NodeNetworkTrafficScorer
+      - name: NetworkTraffic
       disabled:
       - name: "*"
   pluginConfig:
-  - name: NodeNetworkTrafficScorer
+  - name: NetworkTraffic
     args:
       prometheusAddress: "http://prometheus-1616380099-server.monitor"
       networkInterface: "ens192"
