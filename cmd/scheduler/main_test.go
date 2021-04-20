@@ -34,7 +34,7 @@ import (
 	kubeschedulerconfig "k8s.io/kubernetes/pkg/scheduler/apis/config"
 
 	"sigs.k8s.io/scheduler-plugins/pkg/coscheduling"
-	"sigs.k8s.io/scheduler-plugins/pkg/networkmetrics"
+	"sigs.k8s.io/scheduler-plugins/pkg/networktraffic"
 	"sigs.k8s.io/scheduler-plugins/pkg/noderesources"
 	"sigs.k8s.io/scheduler-plugins/pkg/qos"
 	"sigs.k8s.io/scheduler-plugins/pkg/trimaran/targetloadpacking"
@@ -543,7 +543,7 @@ profiles:
 		{
 			name:            "single profile config - Network Traffic with args",
 			flags:           []string{"--config", networkTrafficConfigFileWithArgs},
-			registryOptions: []app.Option{app.WithPlugin(networkmetrics.Name, networkmetrics.New)},
+			registryOptions: []app.Option{app.WithPlugin(networktraffic.Name, networktraffic.New)},
 			wantPlugins: map[string]map[string][]kubeschedulerconfig.Plugin{
 				"default-scheduler": {
 					"BindPlugin":       {{Name: "DefaultBinder"}},

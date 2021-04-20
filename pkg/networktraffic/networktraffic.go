@@ -1,4 +1,4 @@
-package networkmetrics
+package networktraffic
 
 import (
 	"context"
