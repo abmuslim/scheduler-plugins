@@ -1,39 +1,25 @@
 package networkmetrics
 
 import (
+	"context"
 	"fmt"
+	"net/http/httptest"
 	"testing"
 
+	v1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	"sigs.k8s.io/scheduler-plugins/pkg/apis/config"
+	"k8s.io/client-go/informers"
+	clientsetfake "k8s.io/client-go/kubernetes/fake"
+	schedulerapi "k8s.io/kubernetes/pkg/scheduler/apis/config"
+	"k8s.io/kubernetes/pkg/scheduler/framework/plugins/defaultbinder"
+	"k8s.io/kubernetes/pkg/scheduler/framework/plugins/queuesort"
+	frameworkruntime "k8s.io/kubernetes/pkg/scheduler/framework/runtime"
+	framework "k8s.io/kubernetes/pkg/scheduler/framework/v1alpha1"
+	fakeframework "k8s.io/kubernetes/pkg/scheduler/framework/v1alpha1/fake"
+	st "k8s.io/kubernetes/pkg/scheduler/testing"
 	pluginconfig "sigs.k8s.io/scheduler-plugins/pkg/apis/config"
 )
-
-// type testSharedLister struct {
-// 	nodes       []*v1.Node
-// 	nodeInfos   []*framework.NodeInfo
-// 	nodeInfoMap map[string]*framework.NodeInfo
-// }
-
-// func (f *testSharedLister) NodeInfos() framework.NodeInfoLister {
-// 	return f
-// }
-
-// func (f *testSharedLister) List() ([]*framework.NodeInfo, error) {
-// 	return f.nodeInfos, nil
-// }
-
-// func (f *testSharedLister) HavePodsWithAffinityList() ([]*framework.NodeInfo, error) {
-// 	return nil, nil
-// }
-
-// func (f *testSharedLister) HavePodsWithRequiredAntiAffinityList() ([]*framework.NodeInfo, error) {
-// 	return nil, nil
-// }
-
-// func (f *testSharedLister) Get(nodeName string) (*framework.NodeInfo, error) {
-// 	return f.nodeInfoMap[nodeName], nil
-// }
 
 func TestNew(t *testing.T) {
 	networkTrafficArgs := &pluginconfig.NetworkTrafficArgs{
@@ -44,7 +30,7 @@ func TestNew(t *testing.T) {
 
 	obj := runtime.Object(networkTrafficArgs)
 
-	args, ok := obj.(*config.NetworkTrafficArgs)
+	args, ok := obj.(*pluginconfig.NetworkTrafficArgs)
 	if !ok {
 		t.Fail()
 	}
@@ -52,65 +38,145 @@ func TestNew(t *testing.T) {
 	fmt.Print(args)
 }
 
-// 	networkTrafficConfig := config.PluginConfig{
-// 		Name: Name,
-// 		Args: &networkTrafficArgs,
-// 	}
+func TestNetworkTraffic(t *testing.T) {
+	nodesMetrics := map[string]int{
+		"node01": 1,
+		"node02": 15,
+		"node03": 10,
+		"node06": 13,
+	}
 
-// 	registeredPlugins := []st.RegisterPluginFunc{
-// 		st.RegisterScorePlugin(Name, New, 1),
-// 	}
+	expectedResult := map[string]int{
+		"node01": 94,
+		"node02": 0,
+		"node03": 34,
+		"node06": 14,
+	}
 
-// 	cs := testclientset.NewSimpleClientset()
-// 	informerFactory := informers.NewSharedInformerFactory(cs, 0)
-// 	snapshot := newTestSharedLister(nil, nil)
+	nodesRepeatedMetrics := map[string]int{
+		"node01": 1,
+		"node02": 15,
+		"node03": 15,
+		"node06": 13,
+	}
 
-// 	fh, err := NewFramework(registeredPlugins, []config.PluginConfig{networkTrafficConfig}, runtime.WithClientSet(cs),
-// 		runtime.WithInformerFactory(informerFactory), runtime.WithSnapshotSharedLister(snapshot))
+	expectedResultRepeated := map[string]int{
+		"node01": 94,
+		"node02": 0,
+		"node03": 0,
+		"node06": 14,
+	}
 
-// 	assert.Nil(t, err)
-// 	p, err := New(&networkTrafficArgs, fh)
-// 	assert.NotNil(t, p)
-// 	assert.Nil(t, err)
-// }
+	nodeInfos := makeNodeInfo("node01", "node02", "node03", "node06")
 
-// func NewFramework(fns []st.RegisterPluginFunc, args []config.PluginConfig, opts ...runtime.Option) (framework.Framework, error) {
-// 	registry := runtime.Registry{}
-// 	plugins := &config.Plugins{}
-// 	var pluginConfigs []config.PluginConfig
-// 	for _, f := range fns {
-// 		f(&registry, plugins, pluginConfigs)
-// 	}
-// 	return runtime.NewFramework(registry, plugins, args, opts...)
-// }
+	testCases := []struct {
+		name           string
+		nodeInfos      []*framework.NodeInfo
+		nodesValues    map[string]int
+		expectedResult map[string]int
+	}{
+		{"happy path", nodeInfos, nodesMetrics, expectedResult},
+		{"same metrics", nodeInfos, nodesRepeatedMetrics, expectedResultRepeated},
+	}
 
-// func newTestSharedLister(pods []*v1.Pod, nodes []*v1.Node) *testSharedLister {
-// 	nodeInfoMap := make(map[string]*framework.NodeInfo)
-// 	nodeInfos := make([]*framework.NodeInfo, 0)
-// 	for _, pod := range pods {
-// 		nodeName := pod.Spec.NodeName
-// 		if _, ok := nodeInfoMap[nodeName]; !ok {
-// 			nodeInfoMap[nodeName] = framework.NewNodeInfo()
-// 		}
-// 		nodeInfoMap[nodeName].AddPod(pod)
-// 	}
-// 	for _, node := range nodes {
-// 		if _, ok := nodeInfoMap[node.Name]; !ok {
-// 			nodeInfoMap[node.Name] = framework.NewNodeInfo()
-// 		}
-// 		err := nodeInfoMap[node.Name].SetNode(node)
-// 		if err != nil {
-// 			log.Fatal(err)
-// 		}
-// 	}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			cs := clientsetfake.NewSimpleClientset()
+			informerFactory := informers.NewSharedInformerFactory(cs, 0)
+			registeredPlugins := []st.RegisterPluginFunc{
+				st.RegisterBindPlugin(defaultbinder.Name, defaultbinder.New),
+				st.RegisterQueueSortPlugin(queuesort.Name, queuesort.New),
+				st.RegisterScorePlugin(Name, New, 1),
+			}
+			fakeSharedLister := &fakeSharedLister{nodes: tc.nodeInfos}
 
-// 	for _, v := range nodeInfoMap {
-// 		nodeInfos = append(nodeInfos, v)
-// 	}
+			mockPrometheus := NewMockPrometheus(t)
+			mockPrometheus.HandleFunc("/api/v1/query", mockPrometheus.MockQueryRequestHandler)
+			mockServer := httptest.NewServer(mockPrometheus)
+			defer mockServer.Close()
+			args := pluginconfig.NetworkTrafficArgs{NetworkInterface: "ens192", TimeRangeInMinutes: 5, Address: mockServer.URL}
 
-// 	return &testSharedLister{
-// 		nodes:       nodes,
-// 		nodeInfos:   nodeInfos,
-// 		nodeInfoMap: nodeInfoMap,
-// 	}
-// }
+			pluginsConfig := []schedulerapi.PluginConfig{
+				{Name: Name, Args: &args},
+			}
+
+			fh, err := NewFramework(
+				registeredPlugins,
+				pluginsConfig,
+				frameworkruntime.WithClientSet(cs),
+				frameworkruntime.WithInformerFactory(informerFactory),
+				frameworkruntime.WithSnapshotSharedLister(fakeSharedLister),
+			)
+			if err != nil {
+				t.Fatalf("fail to create framework: %s", err)
+			}
+
+			networkTraffic, err := New(&args, fh)
+			if err != nil {
+				t.Fatalf("failed to initialize plugin NetworkTraffic, got error: %s", err)
+			}
+
+			pod := &v1.Pod{ObjectMeta: metav1.ObjectMeta{Name: tc.name}}
+
+			var gotList framework.NodeScoreList
+			plugin := networkTraffic.(framework.ScorePlugin)
+			for i := range tc.nodeInfos {
+				nodeName := tc.nodeInfos[i].Node().Name
+				prometheusResult := fmt.Sprintf(fmt.Sprintf(successResponseTemplate, metricResult), tc.nodesValues[nodeName])
+				mockPrometheus.query = []byte(prometheusResult)
+				score, err := plugin.Score(context.Background(), nil, pod, nodeName)
+				if err != nil {
+					t.Errorf("unexpected error: %v", err)
+				}
+				gotList = append(gotList, framework.NodeScore{Name: tc.nodeInfos[i].Node().Name, Score: score})
+			}
+
+			status := plugin.ScoreExtensions().NormalizeScore(context.Background(), nil, pod, gotList)
+			if !status.IsSuccess() {
+				t.Errorf("unexpected error: %v", status)
+			}
+
+			for _, s := range gotList {
+				expectedScore := tc.expectedResult[s.Name]
+
+				if expectedScore != int(s.Score) {
+					t.Errorf("expected score is %d, got %d", expectedScore, s.Score)
+				}
+			}
+		})
+	}
+}
+
+// NewFramework creates a Framework from the register functions and options.
+func NewFramework(fns []st.RegisterPluginFunc, pluginConfigs []schedulerapi.PluginConfig, opts ...frameworkruntime.Option) (framework.Framework, error) {
+	registry := frameworkruntime.Registry{}
+	plugins := &schedulerapi.Plugins{}
+	for _, f := range fns {
+		f(&registry, plugins, pluginConfigs)
+	}
+	return frameworkruntime.NewFramework(registry, plugins, pluginConfigs, opts...)
+}
+
+func makeNodeInfo(nodesName ...string) []*framework.NodeInfo {
+	nodeInfoList := []*framework.NodeInfo{}
+
+	for _, node := range nodesName {
+		ni := framework.NewNodeInfo()
+		ni.SetNode(&v1.Node{
+			ObjectMeta: metav1.ObjectMeta{Name: node},
+		})
+		nodeInfoList = append(nodeInfoList, ni)
+	}
+
+	return nodeInfoList
+}
+
+var _ framework.SharedLister = &fakeSharedLister{}
+
+type fakeSharedLister struct {
+	nodes []*framework.NodeInfo
+}
+
+func (f *fakeSharedLister) NodeInfos() framework.NodeInfoLister {
+	return fakeframework.NodeInfoLister(f.nodes)
+}
