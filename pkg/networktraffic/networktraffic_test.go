@@ -19,6 +19,7 @@ import (
 	fakeframework "k8s.io/kubernetes/pkg/scheduler/framework/v1alpha1/fake"
 	st "k8s.io/kubernetes/pkg/scheduler/testing"
 	pluginconfig "sigs.k8s.io/scheduler-plugins/pkg/apis/config"
+	"sigs.k8s.io/scheduler-plugins/pkg/networktraffic/testutils"
 )
 
 func TestNew(t *testing.T) {
@@ -30,12 +31,10 @@ func TestNew(t *testing.T) {
 
 	obj := runtime.Object(networkTrafficArgs)
 
-	args, ok := obj.(*pluginconfig.NetworkTrafficArgs)
+	_, ok := obj.(*pluginconfig.NetworkTrafficArgs)
 	if !ok {
-		t.Fail()
+		t.Error("expect NetworkTrafficArgs to implement runtime.Object interface")
 	}
-
-	fmt.Print(args)
 }
 
 func TestNetworkTraffic(t *testing.T) {
@@ -90,7 +89,7 @@ func TestNetworkTraffic(t *testing.T) {
 			}
 			fakeSharedLister := &fakeSharedLister{nodes: tc.nodeInfos}
 
-			mockPrometheus := NewMockPrometheus(t)
+			mockPrometheus := testutils.NewMockPrometheus(t)
 			mockPrometheus.HandleFunc("/api/v1/query", mockPrometheus.MockQueryRequestHandler)
 			mockServer := httptest.NewServer(mockPrometheus)
 			defer mockServer.Close()
@@ -122,8 +121,8 @@ func TestNetworkTraffic(t *testing.T) {
 			plugin := networkTraffic.(framework.ScorePlugin)
 			for i := range tc.nodeInfos {
 				nodeName := tc.nodeInfos[i].Node().Name
-				prometheusResult := fmt.Sprintf(fmt.Sprintf(successResponseTemplate, metricResult), tc.nodesValues[nodeName])
-				mockPrometheus.query = []byte(prometheusResult)
+				prometheusResult := fmt.Sprintf(fmt.Sprintf(testutils.SuccessResponseTemplate, testutils.MetricResult), tc.nodesValues[nodeName])
+				mockPrometheus.SetQuery(prometheusResult)
 				score, err := plugin.Score(context.Background(), nil, pod, nodeName)
 				if err != nil {
 					t.Errorf("unexpected error: %v", err)
