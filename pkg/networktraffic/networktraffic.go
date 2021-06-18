@@ -14,6 +14,7 @@ import (
 
 // NetworkTraffic is a score plugin that favors nodes based on their
 // network traffic amount. Nodes with less traffic are favored.
+// Implements framework.ScorePlugin
 type NetworkTraffic struct {
 	handle     framework.FrameworkHandle
 	prometheus *PrometheusHandle
@@ -43,14 +44,12 @@ func (n *NetworkTraffic) Name() string {
 }
 
 func (n *NetworkTraffic) Score(ctx context.Context, state *framework.CycleState, p *v1.Pod, nodeName string) (int64, *framework.Status) {
-	nodeBandwidth, err := n.prometheus.getNodeBandwidthMeasure(nodeName)
+	nodeBandwidth, err := n.prometheus.GetNodeBandwidthMeasure(nodeName)
 	if err != nil {
 		return 0, framework.NewStatus(framework.Error, fmt.Sprintf("error getting node bandwidth measure: %s", err))
 	}
 
-	nodeBandwidthValue := nodeBandwidth.Value
-
-	klog.Infof("[NetworkTraffic] node bandwidth: %s", nodeBandwidthValue)
+	klog.Infof("[NetworkTraffic] node bandwidth: %s", nodeBandwidth.Value)
 	return int64(nodeBandwidth.Value), nil
 }
 
@@ -59,7 +58,6 @@ func (n *NetworkTraffic) ScoreExtensions() framework.ScoreExtensions {
 }
 
 func (n *NetworkTraffic) NormalizeScore(ctx context.Context, state *framework.CycleState, pod *v1.Pod, scores framework.NodeScoreList) *framework.Status {
-	//framework.MaxNodeScore
 	var higherScore int64
 	for _, node := range scores {
 		if higherScore < node.Score {

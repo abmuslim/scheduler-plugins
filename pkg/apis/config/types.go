@@ -116,12 +116,12 @@ type TargetLoadPackingArgs struct {
 
 // NetworkTrafficArgs holds arguments used to configure NetworkTraffic plugin.
 type NetworkTrafficArgs struct {
-	metav1.TypeMeta `json:",inline"`
+	metav1.TypeMeta
 
 	// Address of the Prometheus Server
-	Address string `json:"prometheusAddress,omitempty"`
-	// NetworkInterface to be monitored, assume that OS is homogeneous
-	NetworkInterface string `json:"networkInterface,omitempty"`
+	Address string
+	// NetworkInterface to be monitored, assume that nodes OS is homogeneous
+	NetworkInterface string
 	// TimeRangeInMinutes used to aggregate the network metrics
-	TimeRangeInMinutes int64 `json:"timeRangeInMinutes,omitempty"`
+	TimeRangeInMinutes int64
 }

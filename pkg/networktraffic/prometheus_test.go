@@ -50,7 +50,7 @@ func TestPrometheus(t *testing.T) {
 
 			prom := NewPrometheus(mockServer.URL, testutils.DefaultInterface, time.Duration(5)*time.Minute)
 
-			nodeMeasure, err := prom.getNodeBandwidthMeasure("node05")
+			nodeMeasure, err := prom.GetNodeBandwidthMeasure("node05")
 			if tc.isErrorExpected {
 				if err == nil {
 					t.Error("error is expected executing prometheus query")

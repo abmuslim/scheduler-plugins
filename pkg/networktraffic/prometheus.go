@@ -16,6 +16,7 @@ const (
 	nodeMeasureQueryTemplate = "sum_over_time(node_network_receive_bytes_total{kubernetes_node=\"%s\",device=\"%s\"}[%s])"
 )
 
+// Handles the interaction of the networkplugin with Prometheus
 type PrometheusHandle struct {
 	networkInterface string
 	timeRange        time.Duration
@@ -39,11 +40,7 @@ func NewPrometheus(address, networkInterface string, timeRange time.Duration) *P
 	}
 }
 
-func getNodeBandwidthQuery(node, networkInterface string, timeRange time.Duration) string {
-	return fmt.Sprintf(nodeMeasureQueryTemplate, node, networkInterface, timeRange)
-}
-
-func (p *PrometheusHandle) getNodeBandwidthMeasure(node string) (*model.Sample, error) {
+func (p *PrometheusHandle) GetNodeBandwidthMeasure(node string) (*model.Sample, error) {
 	query := getNodeBandwidthQuery(node, p.networkInterface, p.timeRange)
 	res, err := p.query(query)
 	if err != nil {
@@ -56,6 +53,10 @@ func (p *PrometheusHandle) getNodeBandwidthMeasure(node string) (*model.Sample, 
 	}
 
 	return nodeMeasure[0], nil
+}
+
+func getNodeBandwidthQuery(node, networkInterface string, timeRange time.Duration) string {
+	return fmt.Sprintf(nodeMeasureQueryTemplate, node, networkInterface, timeRange)
 }
 
 func (p *PrometheusHandle) query(query string) (model.Value, error) {
