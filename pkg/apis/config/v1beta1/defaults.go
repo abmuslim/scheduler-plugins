@@ -103,7 +103,7 @@ func SetDefaultNetworkTrafficArgs(args *NetworkTrafficArgs) {
 		args.TimeRangeInMinutes = &defaultTime
 	}
 
-	if *args.NetworkInterface == "" {
+	if args.NetworkInterface == nil || *args.NetworkInterface == "" {
 		netInterface := "ens192"
 		args.NetworkInterface = &netInterface
 	}

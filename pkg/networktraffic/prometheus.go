@@ -29,7 +29,7 @@ func NewPrometheus(address, networkInterface string, timeRange time.Duration) *P
 		Address: address,
 	})
 	if err != nil {
-		klog.Fatalf("Error creating prometheus client: %s", err.Error())
+		klog.Fatalf("[NetworkTraffic] Error creating prometheus client: %s", err.Error())
 	}
 
 	return &PrometheusHandle{
@@ -49,7 +49,7 @@ func (p *PrometheusHandle) GetNodeBandwidthMeasure(node string) (*model.Sample, 
 
 	nodeMeasure := res.(model.Vector)
 	if len(nodeMeasure) != 1 {
-		return nil, fmt.Errorf("invalid response, expected 1 value, got %d", len(nodeMeasure))
+		return nil, fmt.Errorf("[NetworkTraffic] Invalid response, expected 1 value, got %d", len(nodeMeasure))
 	}
 
 	return nodeMeasure[0], nil
@@ -63,10 +63,10 @@ func (p *PrometheusHandle) query(query string) (model.Value, error) {
 	results, warnings, err := p.api.Query(context.Background(), query, time.Now())
 
 	if len(warnings) > 0 {
-		klog.Warningf("Warnings: %v\n", warnings)
+		klog.Warningf("[NetworkTraffic] Warnings: %v\n", warnings)
 	}
 
-	klog.Infof("result:\n%v\n", results)
+	klog.Infof("[NetworkTraffic] Result:\n%v\n", results)
 
 	return results, err
 }
