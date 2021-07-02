@@ -23,7 +23,6 @@ import (
 
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
-	"k8s.io/klog/v2"
 	schedulerconfig "k8s.io/kube-scheduler/config/v1"
 )
 
@@ -103,9 +102,6 @@ func SetDefaultNetworkTrafficArgs(args *NetworkTrafficArgs) {
 		defaultTime := int64(5)
 		args.TimeRangeInMinutes = &defaultTime
 	}
-
-	klog.Infof("[NetworkTraffic] setDefaultNetworkTrafficArgs: %v", args)
-	klog.Infof("[NetworkTraffic] setDefaultNetworkTrafficArgs - networkInterface: %s", args.NetworkInterface)
 
 	if args.NetworkInterface == nil || *args.NetworkInterface == "" {
 		netInterface := "ens192"
