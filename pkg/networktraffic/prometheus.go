@@ -66,7 +66,5 @@ func (p *PrometheusHandle) query(query string) (model.Value, error) {
 		klog.Warningf("[NetworkTraffic] Warnings: %v\n", warnings)
 	}
 
-	klog.Infof("[NetworkTraffic] Result:\n%v\n", results)
-
 	return results, err
 }

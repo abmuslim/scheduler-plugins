@@ -51,7 +51,7 @@ func (n *NetworkTraffic) Score(ctx context.Context, state *framework.CycleState,
 		return 0, framework.NewStatus(framework.Error, fmt.Sprintf("error getting node bandwidth measure: %s", err))
 	}
 
-	klog.Infof("[NetworkTraffic] node bandwidth: %s", nodeBandwidth.Value)
+	klog.Infof("[NetworkTraffic] node '%s' bandwidth: %s", nodeName, nodeBandwidth.Value)
 	return int64(nodeBandwidth.Value), nil
 }
 
