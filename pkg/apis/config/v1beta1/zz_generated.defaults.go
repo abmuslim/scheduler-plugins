@@ -28,7 +28,7 @@ import (
 // Public to allow building arbitrary schemes.
 // All generated defaulters are covering - they call all nested defaulters.
 func RegisterDefaults(scheme *runtime.Scheme) error {
-	scheme.AddTypeDefaultingFunc(&CapacitySchedulingArgs{}, func(obj interface{}) { SetObjectDefaultNetworkTrafficArgs(obj.(*NetworkTrafficArgs)) })
+	scheme.AddTypeDefaultingFunc(&NetworkTrafficArgs{}, func(obj interface{}) { SetObjectDefaultNetworkTrafficArgs(obj.(*NetworkTrafficArgs)) })
 	return nil
 }
 
