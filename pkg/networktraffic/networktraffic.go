@@ -29,8 +29,10 @@ var _ = framework.ScorePlugin(&NetworkTraffic{})
 func New(obj runtime.Object, h framework.FrameworkHandle) (framework.Plugin, error) {
 	args, ok := obj.(*config.NetworkTrafficArgs)
 	if !ok {
-		return nil, fmt.Errorf("want args to be of type NetworkTrafficArgs, got %T", obj)
+		return nil, fmt.Errorf("[NetworkTraffic] want args to be of type NetworkTrafficArgs, got %T", obj)
 	}
+
+	klog.Infof("[NetworkTraffic] args received are: %v", args)
 
 	return &NetworkTraffic{
 		handle:     h,
