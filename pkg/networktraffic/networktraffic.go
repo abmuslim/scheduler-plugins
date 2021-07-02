@@ -32,7 +32,7 @@ func New(obj runtime.Object, h framework.FrameworkHandle) (framework.Plugin, err
 		return nil, fmt.Errorf("[NetworkTraffic] want args to be of type NetworkTrafficArgs, got %T", obj)
 	}
 
-	klog.Infof("[NetworkTraffic] args received are: %v", args)
+	klog.Infof("[NetworkTraffic] args received: %v", args)
 
 	return &NetworkTraffic{
 		handle:     h,
