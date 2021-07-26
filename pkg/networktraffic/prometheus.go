@@ -44,7 +44,7 @@ func (p *PrometheusHandle) GetNodeBandwidthMeasure(node string) (*model.Sample, 
 	query := getNodeBandwidthQuery(node, p.networkInterface, p.timeRange)
 	res, err := p.query(query)
 	if err != nil {
-		return nil, fmt.Errorf("error querying prometheus: %w", err)
+		return nil, fmt.Errorf("[NetworkTraffic] Error querying prometheus: %w", err)
 	}
 
 	nodeMeasure := res.(model.Vector)
@@ -65,8 +65,6 @@ func (p *PrometheusHandle) query(query string) (model.Value, error) {
 	if len(warnings) > 0 {
 		klog.Warningf("[NetworkTraffic] Warnings: %v\n", warnings)
 	}
-
-	klog.Infof("[NetworkTraffic] Result:\n%v\n", results)
 
 	return results, err
 }
