@@ -30,6 +30,8 @@ CONTROLLER_GEN_VER=v0.11.1
 CONTROLLER_GEN_BIN=controller-gen
 CONTROLLER_GEN=${TOOLS_BIN_DIR}/${CONTROLLER_GEN_BIN}-${CONTROLLER_GEN_VER}
 CRD_OPTIONS="crd:crdVersions=v1"
+[ ! -x "$CONTROLLER_GEN" ] && chmod +x "$CONTROLLER_GEN"
+
 
 echo "Installing controller-gen at ${CONTROLLER_GEN}"
 GOBIN=${TOOLS_BIN_DIR} ${GO_INSTALL} sigs.k8s.io/controller-tools/cmd/controller-gen ${CONTROLLER_GEN_BIN} ${CONTROLLER_GEN_VER}

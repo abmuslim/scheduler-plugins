@@ -267,8 +267,6 @@ type SySchedArgs struct {
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
-// PIDControllerArgs defines the arguments for a PID Controller.
 type PIDControllerArgs struct {
 	metav1.TypeMeta
 
