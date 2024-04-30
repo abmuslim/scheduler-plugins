@@ -250,3 +250,26 @@ func SetDefaults_SySchedArgs(obj *SySchedArgs) {
 		obj.DefaultProfileName = &DefaultSySchedProfileName
 	}
 }
+
+// SetDefaultPIDControllerArgs sets the default parameters for the PIDController plugin.
+func SetDefaultPIDControllerArgs(args *PIDControllerArgs) {
+	if args.EndpointURL == nil {
+		defaultURL := "http://localhost:5000/score"
+		args.EndpointURL = &defaultURL
+	}
+
+	if args.MaxIdleConnections == nil {
+		defaultMaxIdle := 10
+		args.MaxIdleConnections = &defaultMaxIdle
+	}
+
+	if args.IdleConnectionTimeoutSec == nil {
+		defaultIdleTimeout := 30
+		args.IdleConnectionTimeoutSec = &defaultIdleTimeout
+	}
+
+	if args.RequestTimeoutSec == nil {
+		defaultRequestTimeout := 10
+		args.RequestTimeoutSec = &defaultRequestTimeout
+	}
+}

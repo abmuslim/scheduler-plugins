@@ -265,3 +265,22 @@ type SySchedArgs struct {
 	// CR name of the default profile for all system calls
 	DefaultProfileName string
 }
+
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+
+// PIDControllerArgs defines the arguments for a PID Controller.
+type PIDControllerArgs struct {
+	metav1.TypeMeta
+
+	// EndpointURL is the URL to which score requests will be sent.
+	EndpointURL *string
+
+	// MaxIdleConnections defines the maximum number of idle connections to the server.
+	MaxIdleConnections *int
+
+	// IdleConnectionTimeoutSec defines the timeout for idle connections in seconds.
+	IdleConnectionTimeoutSec *int
+
+	// RequestTimeoutSec defines the timeout for requests in seconds.
+	RequestTimeoutSec *int
+}
