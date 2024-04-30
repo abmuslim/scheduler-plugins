@@ -254,7 +254,7 @@ func SetDefaults_SySchedArgs(obj *SySchedArgs) {
 // SetDefaultPIDControllerArgs sets the default parameters for the PIDController plugin.
 func SetDefaultPIDControllerArgs(args *PIDControllerArgs) {
 	if args.EndpointURL == nil {
-		defaultURL := "http://localhost:5000/score"
+		defaultURL := "http://localhost:5100/score"
 		args.EndpointURL = &defaultURL
 	}
 
