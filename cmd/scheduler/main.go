@@ -23,7 +23,6 @@ import (
 
 	"k8s.io/component-base/logs"
 	"k8s.io/kubernetes/cmd/kube-scheduler/app"
-	"sigs.k8s.io/scheduler-plugins/pkg/networktraffic"
 
 	// Ensure scheme package is initialized.
 	_ "sigs.k8s.io/scheduler-plugins/pkg/apis/config/scheme"
@@ -44,7 +43,7 @@ func main() {
 		//app.WithPlugin(crossnodepreemption.Name, crossnodepreemption.New),
 		//app.WithPlugin(podstate.Name, podstate.New),
 		//app.WithPlugin(qos.Name, qos.New),
-		app.WithPlugin(networktraffic.Name, networktraffic.New),
+		app.WithPlugin(pidcontroller.Name, pidcontroller.New),
 	)
 
 	// TODO: once we switch everything over to Cobra commands, we can go back to calling

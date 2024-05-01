@@ -115,13 +115,18 @@ type TargetLoadPackingArgs struct {
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
 // NetworkTrafficArgs holds arguments used to configure NetworkTraffic plugin.
-type NetworkTrafficArgs struct {
+type PIDControllerArgs struct {
 	metav1.TypeMeta
 
-	// Address of the Prometheus Server
-	Address string
-	// NetworkInterface to be monitored, assume that nodes OS is homogeneous
-	NetworkInterface string
-	// TimeRangeInMinutes used to aggregate the network metrics
-	TimeRangeInMinutes int64
+	// EndpointURL is the URL to which score requests will be sent.
+	EndpointURL *string
+
+	// MaxIdleConnections defines the maximum number of idle connections to the server.
+	MaxIdleConnections *int
+
+	// IdleConnectionTimeoutSec defines the timeout for idle connections in seconds.
+	IdleConnectionTimeoutSec *int
+
+	// RequestTimeoutSec defines the timeout for requests in seconds.
+	RequestTimeoutSec *int
 }

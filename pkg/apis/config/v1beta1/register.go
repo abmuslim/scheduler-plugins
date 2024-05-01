@@ -41,7 +41,7 @@ func addKnownTypes(scheme *runtime.Scheme) error {
 		// &NodeResourcesAllocatableArgs{},
 		// &CapacitySchedulingArgs{},
 		// &TargetLoadPackingArgs{},
-		&NetworkTrafficArgs{},
+		&PIDControllerArgs{},
 	)
 	return nil
 }

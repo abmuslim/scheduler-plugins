@@ -117,13 +117,18 @@ type TargetLoadPackingArgs struct {
 // +k8s:defaulter-gen=true
 
 // NetworkTrafficArgs holds arguments used to configure NetworkTraffic plugin.
-type NetworkTrafficArgs struct {
+type PIDControllerArgs struct {
 	metav1.TypeMeta `json:",inline"`
 
-	// Address of the Prometheus Server
-	Address *string `json:"prometheusAddress,omitempty"`
-	// NetworkInterface to be monitored, assume that nodes OS is homogeneous
-	NetworkInterface *string `json:"networkInterface,omitempty"`
-	// TimeRangeInMinutes used to aggregate the network metrics
-	TimeRangeInMinutes *int64 `json:"timeRangeInMinutes,omitempty"`
+	// EndpointURL is the URL to which score requests will be sent.
+	EndpointURL *string `json:"endpointURL,omitempty"`
+
+	// MaxIdleConnections defines the maximum number of idle connections to the server.
+	MaxIdleConnections *int `json:"maxIdleConnections,omitempty"`
+
+	// IdleConnectionTimeoutSec defines the timeout for idle connections in seconds.
+	IdleConnectionTimeoutSec *int `json:"idleConnectionTimeoutSec,omitempty"`
+
+	// RequestTimeoutSec defines the timeout for requests in seconds.
+	RequestTimeoutSec *int `json:"requestTimeoutSec,omitempty"`
 }
