@@ -96,15 +96,25 @@ func SetDefaultTargetLoadPackingArgs(args *TargetLoadPackingArgs) {
 	}
 }
 
-// SetDefaultNetworkTrafficArgs sets the default parameters for the NetworkTraffic plugin
-func SetDefaultNetworkTrafficArgs(args *NetworkTrafficArgs) {
-	if args.TimeRangeInMinutes == nil {
-		defaultTime := int64(5)
-		args.TimeRangeInMinutes = &defaultTime
+// SetDefaultPIDControllerArgs sets the default parameters for the PIDController plugin.
+func SetDefaultPIDControllerArgs(args *PIDControllerArgs) {
+	if args.EndpointURL == nil {
+		defaultURL := "http://localhost:5000/score"
+		args.EndpointURL = &defaultURL
 	}
 
-	if args.NetworkInterface == nil || *args.NetworkInterface == "" {
-		netInterface := "ens192"
-		args.NetworkInterface = &netInterface
+	if args.MaxIdleConnections == nil {
+		defaultMaxIdle := 10
+		args.MaxIdleConnections = &defaultMaxIdle
+	}
+
+	if args.IdleConnectionTimeoutSec == nil {
+		defaultIdleTimeout := 30
+		args.IdleConnectionTimeoutSec = &defaultIdleTimeout
+	}
+
+	if args.RequestTimeoutSec == nil {
+		defaultRequestTimeout := 10
+		args.RequestTimeoutSec = &defaultRequestTimeout
 	}
 }

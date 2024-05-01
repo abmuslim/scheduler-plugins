@@ -114,7 +114,7 @@ type TargetLoadPackingArgs struct {
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// NetworkTrafficArgs holds arguments used to configure NetworkTraffic plugin.
+// PIDControllerArgs holds arguments used to configure PIDController plugin.
 type PIDControllerArgs struct {
 	metav1.TypeMeta
 

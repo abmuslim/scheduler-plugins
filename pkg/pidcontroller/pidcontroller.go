@@ -18,7 +18,7 @@ const Name = "PIDController"
 const MaxNodeScore = framework.MaxNodeScore
 
 type PIDController struct {
-	handle      framework.Handle
+	handle      framework.FrameworkHandle
 	client      *http.Client
 	endpointURL string
 }
@@ -31,25 +31,25 @@ func (p *PIDController) Score(ctx context.Context, state *framework.CycleState, 
 	// Send GET request to the configured endpoint URL
 	resp, err := p.client.Get(p.endpointURL)
 	if err != nil {
-		return 0, framework.AsStatus(fmt.Errorf("error fetching score: %v", err))
+		return 0, framework.NewStatus(framework.Error, fmt.Sprintf("error fetching score: %v", err))
+
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return 0, framework.AsStatus(fmt.Errorf("error reading response: %v", err))
+		return 0, framework.NewStatus(framework.Error, fmt.Sprintf("error reading response: %v", err))
 	}
 
 	var result map[string]int
 	if err = json.Unmarshal(body, &result); err != nil {
-		return 0, framework.AsStatus(fmt.Errorf("error parsing JSON: %v", err))
+		return 0, framework.NewStatus(framework.Error, fmt.Sprintf("error parsing JSON: %v", err))
 	}
 
 	score, ok := result["score"]
 	if !ok {
-		return 0, framework.AsStatus(fmt.Errorf("score not found in the response"))
+		return 0, framework.NewStatus(framework.Error, fmt.Sprintf("score not found in the response"))
 	}
-
 	return int64(score), nil
 }
 
@@ -76,13 +76,13 @@ func (p *PIDController) NormalizeScore(ctx context.Context, state *framework.Cyc
 	return nil
 }
 
-func New(ctx context.Context, obj runtime.Object, handle framework.Handle) (framework.Plugin, error) {
+// Adjust the New function to remove the context parameter
+func New(obj runtime.Object, handle framework.FrameworkHandle) (framework.Plugin, error) {
 	args, ok := obj.(*config.PIDControllerArgs)
 	if !ok {
 		return nil, fmt.Errorf("want args to be of type PIDControllerArgs, got %T", obj)
 	}
 
-	// Dereference pointer fields with proper nil checks to prevent panics
 	var maxIdleConns, idleTimeoutSec, requestTimeoutSec int
 	var endpointURL string
 
