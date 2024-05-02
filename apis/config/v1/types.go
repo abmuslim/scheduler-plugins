@@ -263,3 +263,23 @@ type SySchedArgs struct {
 	// CR name of the default profile for all system calls
 	DefaultProfileName *string `json:"defaultProfileName,omitempty"`
 }
+
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +k8s:defaulter-gen=true
+
+// PIDControllerArgs holds arguments used to configure PIDController plugin.
+type PIDControllerArgs struct {
+	metav1.TypeMeta `json:",inline"`
+
+	// EndpointURL is the URL to which score requests will be sent.
+	EndpointURL *string `json:"endpointURL,omitempty"`
+
+	// MaxIdleConnections defines the maximum number of idle connections to the server.
+	MaxIdleConnections *int `json:"maxIdleConnections,omitempty"`
+
+	// IdleConnectionTimeoutSec defines the timeout for idle connections in seconds.
+	IdleConnectionTimeoutSec *int `json:"idleConnectionTimeoutSec,omitempty"`
+
+	// RequestTimeoutSec defines the timeout for requests in seconds.
+	RequestTimeoutSec *int `json:"requestTimeoutSec,omitempty"`
+}
