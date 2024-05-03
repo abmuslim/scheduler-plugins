@@ -22,8 +22,8 @@ INTEGTESTENVVAR=SCHED_PLUGINS_TEST_VERBOSE=1
 # registry, not production(registry.k8s.io).
 RELEASE_REGISTRY?=gcr.io/k8s-staging-scheduler-plugins
 RELEASE_VERSION?=v$(shell date +%Y%m%d)-$(shell git describe --tags --match "v*")
-RELEASE_IMAGE:=kube-scheduler:$(RELEASE_VERSION)
-RELEASE_CONTROLLER_IMAGE:=controller:$(RELEASE_VERSION)
+RELEASE_IMAGE:=V2-kube-scheduler:$(RELEASE_VERSION)
+RELEASE_CONTROLLER_IMAGE:=V2-controller:$(RELEASE_VERSION)
 
 # VERSION is the scheduler's version
 #
